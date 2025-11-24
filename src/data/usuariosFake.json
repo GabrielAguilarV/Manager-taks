@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "algo": "HS256",
+    "secret": "my-test-secret",
+    "note": "Estos JWTs están firmados con el secreto anterior solo para simular autenticación en entornos de desarrollo/testing."
+  },
+  "users": [
+    {
+      "id": "1",
+      "username": "Chalia",
+      "password": "Man10Da11+",
+      "roles": [
+        "admin",
+        "user"
+      ],
+      "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbImFkbWluIiwidXNlciJdLCJpYXQiOjE3NjEyMzIyNjAsImV4cCI6MTc2MTMxODY2MH0.O7RQgH5RO4jbbr43y3Z1uGtEKk7ci5eKm9i5jqO1MhU",
+      "jwt_payload": {
+        "sub": "1",
+        "username": "admin",
+        "roles": [
+          "admin",
+          "user"
+        ],
+        "iat": 1761232260,
+        "exp": 1761318660
+      },
+      "FecIni": "07-11-2025",
+      "FecFin": "08-11-2025",
+      "EdoCta": false
+    },
+    {
+      "id": "2",
+      "username": "Charis",
+      "password": "Man10Go11+",
+      "roles": [
+        "user"
+      ],
+      "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJqb3NlIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3NjEyMzIyNjAsImV4cCI6MTc2MTMxODY2MH0.E58uD0qJv5l3kq2Yf2x6Xq8Zv6rj8WbK8oQ0h4ZsK5s",
+      "jwt_payload": {
+        "sub": "2",
+        "username": "jose",
+        "roles": [
+          "user"
+        ],
+        "iat": 1761232260,
+        "exp": 1761318660
+      },
+      "FecIni": "09-11-2025",
+      "FecFin": "10-11-2025",
+      "EdoCta": true
+    },
+    {
+      "id": "3",
+      "username": "Guada",
+      "password": "Mar10Go11+",
+      "roles": [
+        "guest"
+      ],
+      "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJpbmZpdGFkb3IiLCJyb2xlcyI6WyJndWVzdCJdLCJpYXQiOjE3NjEyMzIyNjAsImV4cCI6MTc2MTIzNTg2MH0.u1F2qz3KcZ1yJf2Jw0q1b7G5oT2Yq9ZsK8nVh5rYw2M",
+      "jwt_payload": {
+        "sub": "3",
+        "username": "invitado",
+        "roles": [
+          "guest"
+        ],
+        "iat": 1761232260,
+        "exp": 1761235860
+      },
+      "FecIni": "11-11-2025",
+      "FecFin": "13-11-2025",
+      "EdoCta": true
+    }
+  ]
+}
