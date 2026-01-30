@@ -18,6 +18,7 @@ type TaskContextValue = {
   tasks: Task[]
   addTask: (t: Omit<Task, 'id'>) => Task
   assignTask: (taskId: string, employeeId: string) => void
+  updateTask: (taskId: string, changes: Partial<Task>) => void
 }
 
 const TaskContext = createContext<TaskContextValue | undefined>(undefined)
@@ -179,8 +180,12 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTasks((prev) => prev.map(tsk => tsk.id === taskId ? { ...tsk, responsableId: employeeId } : tsk))
   }
 
+  function updateTask(taskId: string, changes: Partial<Task>) {
+    setTasks((prev) => prev.map(tsk => tsk.id === taskId ? { ...tsk, ...changes } : tsk))
+  }
+
   return (
-    <TaskContext.Provider value={{ tasks, addTask, assignTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, assignTask, updateTask }}>
       {children}
     </TaskContext.Provider>
   )

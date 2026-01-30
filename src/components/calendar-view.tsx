@@ -6,6 +6,8 @@ import { useEmployees } from "@/context/employedContext/EmployedContext"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, Calendar, Clock, User, Building2, AlertCircle } from "lucide-react"
 
@@ -24,6 +26,18 @@ export function CalendarView() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+
+  // edit form state
+  const [editTitle, setEditTitle] = useState('')
+  const [editEmpresa, setEditEmpresa] = useState('')
+  const [editResponsable, setEditResponsable] = useState('')
+  const [editPrioridad, setEditPrioridad] = useState<string | undefined>('media')
+  const [editEstado, setEditEstado] = useState<string | undefined>('pendiente')
+  const [editFechaInicio, setEditFechaInicio] = useState('')
+  const [editFechaFin, setEditFechaFin] = useState('')
+  const [editDescripcion, setEditDescripcion] = useState('')
+  const [editTiempo, setEditTiempo] = useState<number | undefined>(0)
 
   const year = currentMonth.getFullYear()
   const month = currentMonth.getMonth()
@@ -80,6 +94,40 @@ export function CalendarView() {
     if (!responsableId) return 'Sin asignar'
     const emp = employees.find(e => e.id === responsableId)
     return emp?.name || 'Desconocido'
+  }
+
+  const { updateTask } = useTasks()
+
+  const startEditing = () => {
+    if (!selectedEvent) return
+    const t = selectedEvent.taskData
+    setEditTitle(t.title || '')
+    setEditEmpresa(t.empresa || '')
+    setEditResponsable(t.responsableId || '')
+    setEditPrioridad(t.prioridad || 'media')
+    setEditEstado(t.estado || 'pendiente')
+    setEditFechaInicio(t.fechaInicio ? t.fechaInicio.split('T')[0] : t.fechaInicio || '')
+    setEditFechaFin(t.fechaFin ? t.fechaFin.split('T')[0] : t.fechaFin || '')
+    setEditDescripcion(t.descripcion || '')
+    setEditTiempo(t.tiempoValorado ?? 0)
+    setIsEditing(true)
+  }
+
+  const saveEdits = () => {
+    if (!selectedEvent) return
+    updateTask(selectedEvent.taskData.id, {
+      title: editTitle,
+      empresa: editEmpresa,
+      responsableId: editResponsable,
+      prioridad: editPrioridad,
+      estado: editEstado,
+      fechaInicio: editFechaInicio || undefined,
+      fechaFin: editFechaFin || undefined,
+      descripcion: editDescripcion,
+      tiempoValorado: editTiempo
+    })
+    setIsEditing(false)
+    setIsDialogOpen(false)
   }
 
   return (
@@ -263,12 +311,41 @@ export function CalendarView() {
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button variant="outline" onClick={() => { setIsDialogOpen(false); setIsEditing(false); }}>
                   Cerrar
                 </Button>
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  Editar Tarea
-                </Button>
+
+                {!isEditing ? (
+                  <Button className="bg-blue-600 hover:bg-blue-700" onClick={startEditing}>
+                    Editar Tarea
+                  </Button>
+                ) : (
+                  <div className="w-full">
+                    <div className="grid grid-cols-2 gap-3">
+                      <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Título" />
+                      <Input value={editEmpresa} onChange={(e) => setEditEmpresa(e.target.value)} placeholder="Empresa" />
+                      <select className="border rounded-md px-2 py-1" value={editResponsable} onChange={(e) => setEditResponsable(e.target.value)}>
+                        <option value="">Sin asignar</option>
+                        {employees.map(emp => (
+                          <option key={emp.id} value={emp.id}>{emp.name}</option>
+                        ))}
+                      </select>
+                      <select className="border rounded-md px-2 py-1" value={editPrioridad} onChange={(e) => setEditPrioridad(e.target.value)}>
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                      </select>
+                      <input className="border rounded-md px-2 py-1" type="date" value={editFechaInicio} onChange={(e) => setEditFechaInicio(e.target.value)} />
+                      <input className="border rounded-md px-2 py-1" type="date" value={editFechaFin} onChange={(e) => setEditFechaFin(e.target.value)} />
+                      <Textarea value={editDescripcion} onChange={(e) => setEditDescripcion(e.target.value)} placeholder="Descripción" />
+                      <Input type="number" value={editTiempo ?? 0} onChange={(e) => setEditTiempo(Number(e.target.value))} placeholder="Tiempo estimado (hrs)" />
+                    </div>
+                    <div className="flex justify-end gap-2 mt-3">
+                      <Button variant="outline" onClick={() => setIsEditing(false)}>Cancelar</Button>
+                      <Button onClick={saveEdits} className="bg-green-600 hover:bg-green-700">Guardar</Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
